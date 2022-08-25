@@ -36,9 +36,13 @@ def talker():
         
 
     def on_release(key):
-        if key == Key.up or Key.down:
+        if key == Key.up:
             twist.linear.x = 0
-        if key == Key.left or Key.right:
+        if key == Key.down:
+            twist.linear.x = 0
+        if key == Key.left:
+            twist.angular.z = 0
+        if key == Key.right:
             twist.angular.z = 0
         publisher.publish(twist)
         rate.sleep()
