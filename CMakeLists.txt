@@ -162,6 +162,7 @@ include_directories(
 catkin_install_python(PROGRAMS
    src/Talker_Listener/talker.py
    src/Talker_Listener/listener.py
+   src/Turtlesim/control.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 
