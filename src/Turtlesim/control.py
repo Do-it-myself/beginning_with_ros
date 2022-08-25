@@ -18,6 +18,7 @@ def talker():
     twist = Twist()
 
     # Keyboard
+    
     def on_press(key):
         if key == Key.esc:
             return False

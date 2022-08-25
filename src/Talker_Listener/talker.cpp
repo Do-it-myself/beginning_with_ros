@@ -29,7 +29,7 @@ int main(int argc, char **argv)
         message.data = ss.str();
 
         // Put string to log
-        ROS_INFO("CPP - %s\n", message.data.c_str());
+        ROS_INFO("CPP - %s", message.data.c_str());
 
         // Publish message
         publisher.publish(message);

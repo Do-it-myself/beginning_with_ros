@@ -180,6 +180,10 @@ target_link_libraries (talker_cpp ${catkin_LIBRARIES})
 add_executable(listener_cpp src/Talker_Listener/listener.cpp)
 target_link_libraries (listener_cpp ${catkin_LIBRARIES})
 
+# location
+add_executable(location src/Turtlesim/location.cpp)
+target_link_libraries (location ${catkin_LIBRARIES})
+
 ## Mark libraries for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html
 # install(TARGETS ${PROJECT_NAME}
