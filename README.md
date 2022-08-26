@@ -12,7 +12,7 @@ CMakeLists.txt
 1. add_message_files(
   FILES
   ...
-  *your_message*.msg
+  *your_message.msg*
   ...
   )
 1. generate_messages(
