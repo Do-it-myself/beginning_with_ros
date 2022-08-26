@@ -54,11 +54,10 @@ add_message_files(
 )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+add_service_files(
+   FILES
+   AddTwoInts.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -164,6 +163,8 @@ catkin_install_python(PROGRAMS
    src/Talker_Listener/listener.py
    src/Turtlesim/control.py
    src/IOT/iot_listener.py
+   src/AddTwoInts/add_client.py
+   src/AddTwoInts/add_server.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 

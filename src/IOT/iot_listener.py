@@ -3,6 +3,10 @@ from beginning_with_ros.msg import IOTsensor
 
 def iot_callback_function(message):
     rospy.loginfo("")
+    print("   Name: {}".format(message.name))
+    print("   ID: {}".format(message.id))
+    print("   Temperature: {}".format(message.temperature))
+    print("   Humidity: {}".format(message.humidity))
     
 
 def iot_listener():
