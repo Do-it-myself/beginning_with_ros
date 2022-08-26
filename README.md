@@ -1,9 +1,9 @@
 # Notes on making custom message
-## package.xml
+package.xml
 1. Add <build_depend>message_generation</build_depend>
 1. Add <exec_depend>message_runtime</exec_depend>
 
-## CMakeLists.txt
+CMakeLists.txt
 1. find_package(catkin REQUIRED COMPONENTS
   ...
   message_generation 
