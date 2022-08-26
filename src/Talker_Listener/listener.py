@@ -2,7 +2,11 @@ import rospy
 from std_msgs.msg import String
 
 def callback_function(message):
-    rospy.loginfo("Python - %s" % message.data)
+    rospy.loginfo("")
+    print("   Name: {}".format(message.name))
+    print("   ID: {}".format(message.id))
+    print("   Temperature: {}".format(message.temperature))
+    print("   Humidity: {}".format(message.humidity))
 
 def listener():
     ## ----- NODE ----- ##

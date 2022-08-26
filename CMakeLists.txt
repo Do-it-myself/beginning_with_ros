@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(Beginning-with-ROS)
+project(beginning_with_ros)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -68,10 +68,10 @@ add_message_files(
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs
-# )
+generate_messages(
+   DEPENDENCIES
+   std_msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -104,8 +104,8 @@ add_message_files(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES ros_basics_tutorials
-#  CATKIN_DEPENDS roscpp rospy std_msgs
+#  LIBRARIES beginning_with_ros
+  CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
 #  DEPENDS system_lib
 )
 
@@ -163,6 +163,7 @@ catkin_install_python(PROGRAMS
    src/Talker_Listener/talker.py
    src/Talker_Listener/listener.py
    src/Turtlesim/control.py
+   src/IOT/iot_listener.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 
@@ -183,6 +184,11 @@ target_link_libraries (listener_cpp ${catkin_LIBRARIES})
 # location
 add_executable(location src/Turtlesim/location.cpp)
 target_link_libraries (location ${catkin_LIBRARIES})
+
+# iot
+add_executable(iot_talker src/IOT/iot_talker.cpp)
+add_dependencies(iot_talker ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries (iot_talker ${catkin_LIBRARIES})
 
 ## Mark libraries for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html
