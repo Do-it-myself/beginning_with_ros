@@ -15,12 +15,15 @@ def add_client(x, y):
         response = serviceProxy(x, y)
 
         return response.sum
+
     except rospy.ServiceException(error):
         rospy.loginfo("Service call failed: {}".format(error))
 
 if __name__ == "__main__":
     # Initialize node
-    rospy.init_node("add_client")
+    rospy.init_node("add_client_py")
+
+    # Check argument number
     if len(sys.argv) == 3:
         x = int(sys.argv[1])
         y = int(sys.argv[2])
@@ -29,5 +32,6 @@ if __name__ == "__main__":
         rospy.loginfo("")
         print("    Request: {}, {}".format(x, y))
         print("    Response from server: {}".format(response_sum))
+
     else:
         rospy.loginfo("Incorrect number of arguments - Need: x y")

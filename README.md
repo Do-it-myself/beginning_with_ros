@@ -26,5 +26,5 @@ CMakeLists.txt
   )
 1. ...
    - add_executable(*your_node* *your_node_path*)
-   - add_dependencies(*your_node* ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-   - target_link_linraroes (*your_node* ${catkin_LIBRARIES})
+   - add_dependencies(*your_node* ${${PROJECT_NAME}_EXPORTED_TARGETS})
+   - target_link_libraries (*your_node* ${catkin_LIBRARIES})

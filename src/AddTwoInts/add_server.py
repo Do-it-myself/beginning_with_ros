@@ -5,14 +5,14 @@ from beginning_with_ros.srv import AddTwoIntsResponse
 
 # Provide response
 def add_handler(request):
-    rospy.loginfo('')
-    sum = request.a + request.b
+    response = request.a + request.b
+    rospy.loginfo("")
     print('    Request from client: {}, {}'.format(request.a, request.b))
     print('    Response: {}'.format(sum))
-    return sum
+    return response
 
 def add_server():
-    rospy.init_node('add_server')
+    rospy.init_node('add_server_py')
 
     # Initialize service provider
     rospy.Service('add_two_ints', AddTwoInts, add_handler)

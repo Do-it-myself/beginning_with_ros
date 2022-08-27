@@ -188,8 +188,18 @@ target_link_libraries (location ${catkin_LIBRARIES})
 
 # iot
 add_executable(iot_talker src/IOT/iot_talker.cpp)
-add_dependencies(iot_talker ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(iot_talker ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries (iot_talker ${catkin_LIBRARIES})
+
+# add client
+add_executable(add_client_cpp src/AddTwoInts/add_client.cpp)
+add_dependencies(add_client_cpp beginning_with_ros_gencpp)
+target_link_libraries (add_client_cpp ${catkin_LIBRARIES})
+
+# add server
+add_executable(add_server_cpp src/AddTwoInts/add_server.cpp)
+add_dependencies(add_server_cpp beginning_with_ros_gencpp)
+target_link_libraries (add_server_cpp ${catkin_LIBRARIES})
 
 ## Mark libraries for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html
