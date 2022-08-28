@@ -8,7 +8,7 @@ import math
 ## Talker
 def talker():
     # Node
-    rospy.init_node('turtle_control',anonymous=True)
+    rospy.init_node('turtle_control')
 
     # Publisher
     publisher = rospy.Publisher('turtle1/cmd_vel', Twist, queue_size = 1)

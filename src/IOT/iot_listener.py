@@ -10,7 +10,7 @@ def iot_callback_function(message):
     
 
 def iot_listener():
-    rospy.init_node('iot_listener', anonymous=True)
+    rospy.init_node('iot_listener')
     rospy.Subscriber('iot_info', IOTsensor, iot_callback_function)
     rospy.spin()
 

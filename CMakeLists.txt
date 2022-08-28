@@ -166,6 +166,8 @@ catkin_install_python(PROGRAMS
    src/IOT/iot_listener.py
    src/AddTwoInts/add_client.py
    src/AddTwoInts/add_server.py
+   src/RectangleArea/area_client.py
+   src/RectangleArea/area_server.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 

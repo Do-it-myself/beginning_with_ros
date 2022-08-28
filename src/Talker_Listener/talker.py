@@ -5,7 +5,7 @@ def talker():
     ## ----- NODE ----- ##
     # Create and initialize node
     # arg: node_name, anonymous (create different ID for different nodes)
-    rospy.init_node('talker_py', anonymous=True)
+    rospy.init_node('talker_py')
 
     ## ----- PUBLISHER ----- ##
     # Create publisher object 

@@ -1,8 +1,6 @@
 import sys
 import rospy
 from beginning_with_ros.srv import AddTwoInts
-from beginning_with_ros.srv import AddTwoIntsRequest
-from beginning_with_ros.srv import AddTwoIntsResponse
 
 def add_client(x, y):
     # Check if service exist
@@ -16,8 +14,8 @@ def add_client(x, y):
 
         return response.sum
 
-    except rospy.ServiceException(error):
-        rospy.loginfo("Service call failed: {}".format(error))
+    except rospy.ServiceException():
+        rospy.loginfo("Service call failed")
 
 if __name__ == "__main__":
     # Initialize node

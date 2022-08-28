@@ -8,7 +8,7 @@ def listener():
     ## ----- NODE ----- ##
     # Create and initialize node
     # arg: node_name, anonymous (create different ID for different nodes)
-    rospy.init_node('listener_py', anonymous=True)
+    rospy.init_node('listener_py')
 
     ## ----- SUBSCRIBER ----- ##
     # Create subscriber object

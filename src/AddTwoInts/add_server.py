@@ -1,7 +1,5 @@
 import rospy
 from beginning_with_ros.srv import AddTwoInts
-from beginning_with_ros.srv import AddTwoIntsRequest
-from beginning_with_ros.srv import AddTwoIntsResponse
 
 # Provide response
 def add_handler(request):
