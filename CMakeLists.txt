@@ -160,14 +160,14 @@ include_directories(
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
-   src/Talker_Listener/talker.py
-   src/Talker_Listener/listener.py
-   src/Turtlesim/control.py
-   src/IOT/iot_listener.py
-   src/AddTwoInts/add_client.py
-   src/AddTwoInts/add_server.py
-   src/RectangleArea/area_client.py
-   src/RectangleArea/area_server.py
+   src/Basics/Talker_Listener/talker.py
+   src/Basics/Talker_Listener/listener.py
+   src/Basics/Turtlesim/control.py
+   src/Basics/IOT/iot_listener.py
+   src/Basics/AddTwoInts/add_client.py
+   src/Basics/AddTwoInts/add_server.py
+   src/Basics/RectangleArea/area_client.py
+   src/Basics/RectangleArea/area_server.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 
@@ -178,29 +178,29 @@ catkin_install_python(PROGRAMS
 # )
 
 # talker
-add_executable(talker_cpp src/Talker_Listener/talker.cpp)
+add_executable(talker_cpp src/Basics/Talker_Listener/talker.cpp)
 target_link_libraries (talker_cpp ${catkin_LIBRARIES})
 
 # listener
-add_executable(listener_cpp src/Talker_Listener/listener.cpp)
+add_executable(listener_cpp src/Basics/Talker_Listener/listener.cpp)
 target_link_libraries (listener_cpp ${catkin_LIBRARIES})
 
 # location
-add_executable(location src/Turtlesim/location.cpp)
+add_executable(location src/Basics/Turtlesim/location.cpp)
 target_link_libraries (location ${catkin_LIBRARIES})
 
 # iot
-add_executable(iot_talker src/IOT/iot_talker.cpp)
+add_executable(iot_talker src/Basics/IOT/iot_talker.cpp)
 add_dependencies(iot_talker ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries (iot_talker ${catkin_LIBRARIES})
 
 # add client
-add_executable(add_client_cpp src/AddTwoInts/add_client.cpp)
+add_executable(add_client_cpp src/Basics/AddTwoInts/add_client.cpp)
 add_dependencies(add_client_cpp beginning_with_ros_gencpp)
 target_link_libraries (add_client_cpp ${catkin_LIBRARIES})
 
 # add server
-add_executable(add_server_cpp src/AddTwoInts/add_server.cpp)
+add_executable(add_server_cpp src/Basics/AddTwoInts/add_server.cpp)
 add_dependencies(add_server_cpp beginning_with_ros_gencpp)
 target_link_libraries (add_server_cpp ${catkin_LIBRARIES})
 
