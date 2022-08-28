@@ -8,7 +8,7 @@ def add_handler(request):
     response = request.a + request.b
     rospy.loginfo("")
     print('    Request from client: {}, {}'.format(request.a, request.b))
-    print('    Response: {}'.format(sum))
+    print('    Response: {}'.format(response))
     return response
 
 def add_server():
