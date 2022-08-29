@@ -19,12 +19,11 @@ void move(double speed, double distance, bool isForward);
 int main (int argc, char **argv) {
     ros::init(argc, argv, "cleaner");
     ros::NodeHandle nodeHandle;
-    ros::Rate rate(0.5);
 
-    publisher = nodeHandle.advertise<geometry_msgs::Twist>("turtle1/cmd_vel", 100);
+    publisher = nodeHandle.advertise<geometry_msgs::Twist>("turtle1/cmd_vel", 10);
     subscriber = nodeHandle.subscribe("turtle1/pose", 10, poseCallBack);
 
-    move(2.0F, 9.0F, true);
+    move(1.0, 4.0, true);
 
     return 0;
 }
@@ -35,8 +34,9 @@ void poseCallBack (const turtlesim::Pose::ConstPtr &message) {
     pose_current.theta = message->theta;
 }
 
-void move(double speed, double distance, bool isForward) {
+void move(double speed, double distance, bool isForward=true) {
     geometry_msgs::Twist velocity;
+    ros::Rate rate(10);
 
     // decide velocity
     if (isForward) {
@@ -51,7 +51,13 @@ void move(double speed, double distance, bool isForward) {
     velocity.angular.y = 0;
     velocity.angular.z = 0;
 
-    ros::Rate rate(10);
+    // store initial pose
+    do {
+        pose_initial = pose_current;
+        ros::spinOnce();
+        rate.sleep();
+    } while(pose_initial.x == 0);
+    
     double distance_current = 0;
     do {
         // check distance
