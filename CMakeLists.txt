@@ -204,6 +204,10 @@ add_executable(add_server_cpp src/Basics/AddTwoInts/add_server.cpp)
 add_dependencies(add_server_cpp beginning_with_ros_gencpp)
 target_link_libraries (add_server_cpp ${catkin_LIBRARIES})
 
+# cleaner
+add_executable(cleaner_cpp src/Motion/cleaner.cpp)
+target_link_libraries (cleaner_cpp ${catkin_LIBRARIES})
+
 ## Mark libraries for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html
 # install(TARGETS ${PROJECT_NAME}
