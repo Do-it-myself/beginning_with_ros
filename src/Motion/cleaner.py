@@ -29,11 +29,13 @@ def move(publisher, speed, distance, isForward):
     pose_initial.x = pose_current.x
     pose_initial.y = pose_current.y
     pose_initial.theta = pose_current.theta
-    while (pose_initial.x == 0):
+    i = 0
+    while (pose_initial.x == 0 and i < 10):
         pose_initial.x = pose_current.x
         pose_initial.y = pose_current.y
         pose_initial.theta = pose_current.theta
         rate.sleep()
+        i += 1
 
     distance_current = 0
     while (distance_current < distance):
@@ -71,11 +73,13 @@ def rotate(publisher, speed_degree, distance_degree, clockwise):
     pose_initial.x = pose_current.x
     pose_initial.y = pose_current.y
     pose_initial.theta = pose_current.theta
-    while (pose_initial.x == 0):
+    i = 0
+    while (pose_initial.x == 0 and i < 10):
         pose_initial.x = pose_current.x
         pose_initial.y = pose_current.y
         pose_initial.theta = pose_current.theta
         rate.sleep()
+        i += 1
 
     # decide domain flag
     if pose_current.theta >= 0:
@@ -117,6 +121,7 @@ def rotate(publisher, speed_degree, distance_degree, clockwise):
 
 if __name__ == "__main__":
     rospy.init_node("cleaner_py")
-    publisher = rospy.1.Subscriber("turtle1/pose", Pose, poseCallBack)
+    publisher = rospy.Publisher("turtle1/cmd_vel", Twist, queue_size=100)
+    subscriber = rospy.Subscriber("turtle1/pose", Pose, poseCallBack)
     move(publisher, 1, 1, True)
-    rotate(publisher, 90, 720, False)
+    rotate(publisher, 30, 90, False)
