@@ -54,8 +54,69 @@ def move(publisher, speed, distance, isForward):
     velocity.linear.x = 0
     publisher.publish(velocity)
 
+def rotate(publisher, speed_degree, distance_degree, clockwise):
+    rate = rospy.Rate(100)
+
+    # decide velocity
+    velocity = Twist()
+    if clockwise:
+        velocity.angular.z = -math.radians(abs(speed_degree))
+    else:
+        velocity.angular.z = math.radians(abs(speed_degree))
+    velocity.linear.x, velocity.linear.y, velocity.linear.z = 0, 0, 0
+    velocity.angular.x, velocity.angular.y = 0, 0
+    
+    # store initial pose
+    global pose_initial, pose_current, distance_current
+    pose_initial.x = pose_current.x
+    pose_initial.y = pose_current.y
+    pose_initial.theta = pose_current.theta
+    while (pose_initial.x == 0):
+        pose_initial.x = pose_current.x
+        pose_initial.y = pose_current.y
+        pose_initial.theta = pose_current.theta
+        rate.sleep()
+
+    # decide domain flag
+    if pose_current.theta >= 0:
+        positiveFlag = True
+    else:
+        positiveFlag = False
+
+    degree_current = 0
+    offset = 0
+    while (degree_current < distance_degree):
+        # decide whether 360 degree offset is needed
+        positiveFlagPrev = positiveFlag
+        if pose_current.theta >= 0:
+            positiveFlag = True
+        else:
+            positiveFlag = False
+        
+        if clockwise and not positiveFlagPrev and positiveFlag:
+            offset -= math.radians(360)
+        elif not clockwise and positiveFlagPrev and not positiveFlag:
+            offset += math.radians(360)
+        
+        # calculate distance
+        degree_current = math.degrees(abs(pose_current.theta - pose_initial.theta + offset))
+
+        # log info
+        rospy.loginfo("Degree: {}".format(degree_current))
+
+        # publish velocity message (move)
+        publisher.publish(velocity)
+        rate.sleep()
+
+    rospy.loginfo("Distance: {}".format(degree_current))
+    rospy.loginfo("Reached")
+
+    # publish velocity message (stop)
+    velocity.angular.z = 0
+    publisher.publish(velocity)
+
 if __name__ == "__main__":
     rospy.init_node("cleaner_py")
-    publisher = rospy.Publisher("turtle1/cmd_vel", Twist, queue_size=100)
-    subscriber = rospy.Subscriber("turtle1/pose", Pose, poseCallBack)
+    publisher = rospy.1.Subscriber("turtle1/pose", Pose, poseCallBack)
     move(publisher, 1, 1, True)
+    rotate(publisher, 90, 720, False)

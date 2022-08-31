@@ -26,7 +26,7 @@ int main (int argc, char **argv) {
     publisher = nodeHandle.advertise<geometry_msgs::Twist>("turtle1/cmd_vel", 1);
     subscriber = nodeHandle.subscribe("turtle1/pose", 1, poseCallBack);
 
-    //move(1.0, 1.0, true);
+    move(1.0, 1.0, true);
     rotate(30, 90, true);
 
     return 0;
@@ -119,10 +119,35 @@ void rotate(double speed_degree, double distance_degree, bool clockwise) {
         rate.sleep();
     } while(pose_initial.x == 0);
 
-    double degree_current;
-    do {
-        // check degree
-        degree_current = radianToDegree(abs(pose_current.theta - pose_initial.theta));
+    // decide domain flag
+    bool positiveFlagPrev, positiveFlag;
+    if (pose_current.theta >= 0) {
+        positiveFlag = true;
+    }
+    else {
+        positiveFlag = false;
+    }
+
+    double degree_current = 0, offset = 0;
+    while (degree_current < distance_degree) {
+        // decide whether 360 degree offset is needed
+        positiveFlagPrev = positiveFlag;
+        if (pose_current.theta >= 0) {
+            positiveFlag = true;
+        }
+        else {
+            positiveFlag = false;
+        }
+
+        if (clockwise && !positiveFlagPrev && positiveFlag) {
+            offset -= degreeToRadian(360);
+        }
+        else if (!clockwise && positiveFlagPrev && !positiveFlag) {
+            offset += degreeToRadian(360);
+        }
+
+        // calculate distance
+        degree_current = radianToDegree(abs(pose_current.theta - pose_initial.theta + offset));
 
         // log 
         ROS_INFO("Degree: %lf", degree_current);
@@ -131,7 +156,7 @@ void rotate(double speed_degree, double distance_degree, bool clockwise) {
         publisher.publish(velocity);
         ros::spinOnce();
         rate.sleep();
-    } while (degree_current < distance_degree);
+    } 
 
      // check degree
     degree_current = radianToDegree(abs(pose_current.theta - pose_initial.theta));
