@@ -168,6 +168,7 @@ catkin_install_python(PROGRAMS
    src/Basics/AddTwoInts/add_server.py
    src/Basics/RectangleArea/area_client.py
    src/Basics/RectangleArea/area_server.py
+   src/Motion/cleaner.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 

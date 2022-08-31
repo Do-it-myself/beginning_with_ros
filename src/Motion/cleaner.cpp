@@ -20,10 +20,10 @@ int main (int argc, char **argv) {
     ros::init(argc, argv, "cleaner");
     ros::NodeHandle nodeHandle;
 
-    publisher = nodeHandle.advertise<geometry_msgs::Twist>("turtle1/cmd_vel", 10);
-    subscriber = nodeHandle.subscribe("turtle1/pose", 10, poseCallBack);
+    publisher = nodeHandle.advertise<geometry_msgs::Twist>("turtle1/cmd_vel", 1);
+    subscriber = nodeHandle.subscribe("turtle1/pose", 1, poseCallBack);
 
-    move(1.0, 4.0, true);
+    move(1.0, 1.0, true);
 
     return 0;
 }
@@ -36,7 +36,7 @@ void poseCallBack (const turtlesim::Pose::ConstPtr &message) {
 
 void move(double speed, double distance, bool isForward=true) {
     geometry_msgs::Twist velocity;
-    ros::Rate rate(10);
+    ros::Rate rate(100);
 
     // decide velocity
     if (isForward) {
