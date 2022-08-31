@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h> // abs
 #include <math.h> // sqrt
-#include <cmath> // pow
+#include <cmath> // pow, M_PI
 
 // global objects/variables declaration
 ros::Publisher publisher;
@@ -13,8 +13,11 @@ turtlesim::Pose pose_initial;
 turtlesim::Pose pose_current;
 
 // global functions declaration
+double degreeToRadian(double degree);
+double radianToDegree (double radian);
 void poseCallBack (const turtlesim::Pose::ConstPtr &message);
 void move(double speed, double distance, bool isForward);
+void rotate(double speed_degree, double distance_degree, bool clockwise);
 
 int main (int argc, char **argv) {
     ros::init(argc, argv, "cleaner");
@@ -23,9 +26,18 @@ int main (int argc, char **argv) {
     publisher = nodeHandle.advertise<geometry_msgs::Twist>("turtle1/cmd_vel", 1);
     subscriber = nodeHandle.subscribe("turtle1/pose", 1, poseCallBack);
 
-    move(1.0, 1.0, true);
+    //move(1.0, 1.0, true);
+    rotate(30, 90, true);
 
     return 0;
+}
+
+double degreeToRadian(double degree) {
+    return degree * M_PI / 180;
+}
+
+double radianToDegree(double radian) {
+    return radian / M_PI * 180;
 }
 
 void poseCallBack (const turtlesim::Pose::ConstPtr &message) {
@@ -53,8 +65,8 @@ void move(double speed, double distance, bool isForward=true) {
 
     // store initial pose
     do {
-        pose_initial = pose_current;
         ros::spinOnce();
+        pose_initial = pose_current;
         rate.sleep();
     } while(pose_initial.x == 0);
     
@@ -83,7 +95,56 @@ void move(double speed, double distance, bool isForward=true) {
     ros::spinOnce();
 }
 
+void rotate(double speed_degree, double distance_degree, bool clockwise) {
+    geometry_msgs::Twist velocity;
+    ros::Rate rate(200);
 
+    // decide velocity 
+    if (clockwise) {
+        velocity.angular.z = -degreeToRadian(abs(speed_degree));
+    }
+    else {
+        velocity.angular.z = degreeToRadian(abs(speed_degree));
+    }
+    velocity.angular.x = 0;
+    velocity.angular.y = 0;
+    velocity.linear.x = 0;
+    velocity.linear.y = 0;
+    velocity.linear.z = 0;
+
+    // store initial pose
+     do {
+        ros::spinOnce();
+        pose_initial = pose_current;
+        rate.sleep();
+    } while(pose_initial.x == 0);
+
+    double degree_current;
+    do {
+        // check degree
+        degree_current = radianToDegree(abs(pose_current.theta - pose_initial.theta));
+
+        // log 
+        ROS_INFO("Degree: %lf", degree_current);
+
+        // publish velocity (move)
+        publisher.publish(velocity);
+        ros::spinOnce();
+        rate.sleep();
+    } while (degree_current < distance_degree);
+
+     // check degree
+    degree_current = radianToDegree(abs(pose_current.theta - pose_initial.theta));
+        
+    // log 
+    ROS_INFO("Degree: %lf", degree_current);
+    ROS_INFO("Reached");
+
+    // publish velocity (stop)
+    velocity.angular.z = 0;
+    publisher.publish(velocity);
+    ros::spinOnce();
+}
 
 
 
