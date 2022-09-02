@@ -18,7 +18,7 @@ double radianToDegree(double radian);
 void poseCallBack(const turtlesim::Pose::ConstPtr &message);
 void move(double speed, double distance, bool isForward);
 void rotate(double speed_degree, double distance_degree, bool clockwise);
-void goToGoal1(turtlesim::Pose goal, double distance_tol, double angular_tol);
+void goToGoal1(turtlesim::Pose goal, double distance_tol);
 void goToGoal2(turtlesim::Pose goal, double tolerance);
 
 int main(int argc, char **argv)
@@ -30,6 +30,10 @@ int main(int argc, char **argv)
     subscriber = nodeHandle.subscribe("turtle1/pose", 1, poseCallBack);
 
     turtlesim::Pose goalPose;
+    goalPose.x = 9;
+    goalPose.y = 9;
+    goToGoal1(goalPose, 0.1);
+
     goalPose.x = 1;
     goalPose.y = 1;
     goToGoal2(goalPose, 0.1);
