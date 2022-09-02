@@ -119,9 +119,10 @@ def rotate(publisher, speed_degree, distance_degree, clockwise):
     velocity.angular.z = 0
     publisher.publish(velocity)
 
-def goToGoal1(publisher, goal, distance_tol, angular_tol):
+def goToGoal1(publisher, goal, distance_tol):
     Kl = 0.4
     Ka = 1.6
+    angular_tol = distance_tol/10
     velocity = Twist()
     rate = rospy.Rate(100)
 
@@ -170,7 +171,6 @@ def goToGoal1(publisher, goal, distance_tol, angular_tol):
     # publish velocity (stop)
     velocity.linear.x = 0
     publisher.publish(velocity)
-
 
 def goToGoal2(publisher, goal, tolerance):
     Kl = 0.4
@@ -226,7 +226,7 @@ if __name__ == "__main__":
     goalPose.x = 9
     goalPose.y = 9
     goToGoal2(publisher, goalPose, 0.1)
-    
+
     goalPose.x = 1
     goalPose.y = 8
-    goToGoal1(publisher, goalPose, 0.1, 0.01)
+    goToGoal1(publisher, goalPose, 0.1)

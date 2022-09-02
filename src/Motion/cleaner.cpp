@@ -18,7 +18,8 @@ double radianToDegree(double radian);
 void poseCallBack(const turtlesim::Pose::ConstPtr &message);
 void move(double speed, double distance, bool isForward);
 void rotate(double speed_degree, double distance_degree, bool clockwise);
-void goToGoal(turtlesim::Pose goal, double tolerance);
+void goToGoal1(turtlesim::Pose goal, double distance_tol, double angular_tol);
+void goToGoal2(turtlesim::Pose goal, double tolerance);
 
 int main(int argc, char **argv)
 {
@@ -31,7 +32,7 @@ int main(int argc, char **argv)
     turtlesim::Pose goalPose;
     goalPose.x = 1;
     goalPose.y = 1;
-    goToGoal(goalPose, 0.1);
+    goToGoal2(goalPose, 0.1);
 
     return 0;
 }
@@ -198,7 +199,82 @@ void rotate(double speed_degree, double distance_degree, bool clockwise = true)
     ros::spinOnce();
 }
 
-void goToGoal(turtlesim::Pose goal, double tolerance)
+void goToGoal1(turtlesim::Pose goal, double distance_tol)
+{
+    double distance_linear, signed_distance_angular;
+    double offset = 0, Kl = 0.4, Ka = 1.6;
+    double angular_tol = distance_tol/10;
+    geometry_msgs::Twist velocity;
+    ros::Rate rate(100);
+
+    // get current pose
+    int i = 0;
+    do
+    {
+        ros::spinOnce();
+        rate.sleep();
+        i++;
+    } while (pose_current.x == 0 && i < 30);
+
+    // angular
+    do
+    {
+        // calculate angle
+        goal.theta = atan((goal.y - pose_current.y) / (goal.x - pose_current.x)); // goal relative to turtle (origin)
+        if ((goal.x - pose_current.x) < 0 &&
+            (goal.y - pose_current.y) > 0) // quadrant II
+        {
+            offset = degreeToRadian(180);
+        }
+        else if ((goal.x - pose_current.x) < 0 &&
+                 (goal.y - pose_current.y) < 0) // quadrant III
+        {
+            offset = -degreeToRadian(180);
+        }
+        else
+        {
+            offset = 0;
+        }
+        signed_distance_angular = goal.theta - pose_current.theta + offset;
+
+        // publish velocity message
+        velocity.angular.z = Ka * signed_distance_angular;
+
+        publisher.publish(velocity);
+        ros::spinOnce();
+        rate.sleep();
+
+        // log info
+        ROS_INFO("Angle left: %lf\n", signed_distance_angular);
+
+    } while (abs(signed_distance_angular) > angular_tol);
+
+    velocity.angular.z = 0;
+
+    do
+    {
+        // calculate distance
+        distance_linear = abs(sqrt(pow((pose_current.x - goal.x), 2) + pow((pose_current.y - goal.y), 2)));
+
+        // publish velocity message
+        velocity.linear.x = Kl * distance_linear;
+        
+        publisher.publish(velocity);
+        ros::spinOnce();
+        rate.sleep();
+
+        // log info
+        ROS_INFO("Distance left: %lf\n", distance_linear);
+
+    } while (distance_linear > distance_tol);
+
+    // publish velocity (stop)
+    velocity.linear.x = 0;
+    publisher.publish(velocity);
+    ros::spinOnce();
+}
+
+void goToGoal2(turtlesim::Pose goal, double tolerance)
 {
     double distance_linear, signed_distance_angular;
     double offset = 0, Kl = 0.4, Ka = 1.6;
@@ -216,7 +292,7 @@ void goToGoal(turtlesim::Pose goal, double tolerance)
 
     do
     {
-        // calculate distance 
+        // calculate distance
         distance_linear = abs(sqrt(pow((pose_current.x - goal.x), 2) + pow((pose_current.y - goal.y), 2)));
 
         // calculate angle
@@ -227,11 +303,12 @@ void goToGoal(turtlesim::Pose goal, double tolerance)
             offset = degreeToRadian(180);
         }
         else if ((goal.x - pose_current.x) < 0 &&
-            (goal.y - pose_current.y) < 0) // quadrant III
+                 (goal.y - pose_current.y) < 0) // quadrant III
         {
             offset = -degreeToRadian(180);
         }
-        else {
+        else
+        {
             offset = 0;
         }
         signed_distance_angular = goal.theta - pose_current.theta + offset;
