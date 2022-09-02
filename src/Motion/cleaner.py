@@ -119,9 +119,114 @@ def rotate(publisher, speed_degree, distance_degree, clockwise):
     velocity.angular.z = 0
     publisher.publish(velocity)
 
+def goToGoal1(publisher, goal, distance_tol, angular_tol):
+    Kl = 0.4
+    Ka = 1.6
+    velocity = Twist()
+    rate = rospy.Rate(100)
+
+    # get current pose
+    i = 0
+    while (pose_current.x == 0 and i < 10):
+        rate.sleep()
+        i += 1
+
+    # angular
+    signed_distance_angular = angular_tol + 1 # to make initial condition true
+    while (abs(signed_distance_angular) > angular_tol):
+        goal.theta = math.atan((goal.y - pose_current.y) / (goal.x - pose_current.x))
+        if ((goal.x - pose_current.x) < 0 and (goal.y - pose_current.y) > 0): # quadrant II
+            offset = math.radians(180)
+        elif ((goal.x - pose_current.x) < 0 and (goal.y - pose_current.y) < 0): # quadrant III
+            offset = -math.radians(180)
+        else:
+            offset = 0
+        signed_distance_angular = goal.theta - pose_current.theta + offset
+
+        # publish velocity message
+        velocity.angular.z = Ka * signed_distance_angular
+        publisher.publish(velocity)
+        rate.sleep()
+
+        # log info
+        rospy.loginfo("Angle left: {}".format(signed_distance_angular))
+
+    velocity.angular.z = 0
+
+    # linear
+    distance_linear = distance_tol + 1
+    while (distance_linear > distance_tol):
+        # calculate distance 
+        distance_linear = abs(math.sqrt((pose_current.x - goal.x)**2 + (pose_current.y - goal.y)**2))
+        
+        # publish velocity message
+        velocity.linear.x = Kl * distance_linear
+        publisher.publish(velocity)
+        rate.sleep()
+
+        # log info
+        rospy.loginfo("Distance left: {}".format(distance_linear))
+
+    # publish velocity (stop)
+    velocity.linear.x = 0
+    publisher.publish(velocity)
+
+
+def goToGoal2(publisher, goal, tolerance):
+    Kl = 0.4
+    Ka = 1.6
+    velocity = Twist()
+    rate = rospy.Rate(100)
+
+    # get current pose
+    i = 0
+    while (pose_current.x == 0 and i < 10):
+        rate.sleep()
+        i += 1
+
+    distance_linear = tolerance + 1 # to make initial condition true
+    while (distance_linear > tolerance):
+        # calculate distance 
+        distance_linear = abs(math.sqrt((pose_current.x - goal.x)**2 + (pose_current.y - goal.y)**2))
+
+        # calculate angle
+        goal.theta = math.atan((goal.y - pose_current.y) / (goal.x - pose_current.x))
+        if ((goal.x - pose_current.x) < 0 and (goal.y - pose_current.y) > 0): # quadrant II
+            offset = math.radians(180)
+        elif ((goal.x - pose_current.x) < 0 and (goal.y - pose_current.y) < 0): # quadrant III
+            offset = -math.radians(180)
+        else:
+            offset = 0
+        signed_distance_angular = goal.theta - pose_current.theta + offset
+
+        # publish velocity message
+        velocity.linear.x = Kl * distance_linear
+        velocity.angular.z = Ka * signed_distance_angular
+        publisher.publish(velocity)
+        rate.sleep()
+
+        # log info
+        rospy.loginfo("")
+        print("    Distance left: {}".format(distance_linear))
+        print("    Angle left: {}".format(signed_distance_angular))
+    
+    # publish velocity (stop)
+    velocity.linear.x = 0
+    velocity.angular.z = 0
+    publisher.publish(velocity)
+
 if __name__ == "__main__":
     rospy.init_node("cleaner_py")
     publisher = rospy.Publisher("turtle1/cmd_vel", Twist, queue_size=100)
     subscriber = rospy.Subscriber("turtle1/pose", Pose, poseCallBack)
     move(publisher, 1, 1, True)
     rotate(publisher, 30, 90, False)
+
+    goalPose = Pose()
+    goalPose.x = 9
+    goalPose.y = 9
+    goToGoal2(publisher, goalPose, 0.1)
+    
+    goalPose.x = 1
+    goalPose.y = 8
+    goToGoal1(publisher, goalPose, 0.1, 0.01)

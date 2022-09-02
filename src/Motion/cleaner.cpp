@@ -203,8 +203,9 @@ void goToGoal(turtlesim::Pose goal, double tolerance)
     double distance_linear, signed_distance_angular;
     double offset = 0, Kl = 0.4, Ka = 1.6;
     geometry_msgs::Twist velocity;
-    ros::Rate rate(200);
+    ros::Rate rate(100);
 
+    // get current pose
     int i = 0;
     do
     {
@@ -215,9 +216,10 @@ void goToGoal(turtlesim::Pose goal, double tolerance)
 
     do
     {
-        // calculate distance and angle
+        // calculate distance 
         distance_linear = abs(sqrt(pow((pose_current.x - goal.x), 2) + pow((pose_current.y - goal.y), 2)));
 
+        // calculate angle
         goal.theta = atan((goal.y - pose_current.y) / (goal.x - pose_current.x)); // goal relative to turtle (origin)
         if ((goal.x - pose_current.x) < 0 &&
             (goal.y - pose_current.y) > 0) // quadrant II
@@ -229,7 +231,9 @@ void goToGoal(turtlesim::Pose goal, double tolerance)
         {
             offset = -degreeToRadian(180);
         }
-
+        else {
+            offset = 0;
+        }
         signed_distance_angular = goal.theta - pose_current.theta + offset;
 
         // publish velocity message
