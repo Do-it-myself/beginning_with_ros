@@ -215,10 +215,39 @@ def goToGoal2(publisher, goal, tolerance):
     velocity.angular.z = 0
     publisher.publish(velocity)
 
+def setDesiredOrientation(publisher, speed_degree, desired_angle_degree):
+    rate = rospy.Rate(100)
+
+    # get current pose
+    i = 0
+    while (pose_current.x == 0 and i < 30):
+        rate.sleep()
+        i += 1
+
+    # check magnitude
+    distance_degree = abs(desired_angle_degree - math.degrees(pose_current.theta))
+    if distance_degree > 180: # obtuse
+        distance_degree = 360 - distance_degree
+        # check clockwise
+        if (desired_angle_degree - math.degrees(pose_current.theta) < 0): 
+            clockwise = False
+        else:
+            clockwise = True
+    else: # acute
+        # check clockwise
+        if (desired_angle_degree - math.degrees(pose_current.theta) < 0): 
+            clockwise = True
+        else:
+            clockwise = False
+
+    # rotate
+    rotate(publisher, speed_degree, distance_degree, clockwise)
+
 if __name__ == "__main__":
     rospy.init_node("cleaner_py")
     publisher = rospy.Publisher("turtle1/cmd_vel", Twist, queue_size=100)
     subscriber = rospy.Subscriber("turtle1/pose", Pose, poseCallBack)
+    '''
     move(publisher, 1, 1, True)
     rotate(publisher, 30, 90, False)
 
@@ -230,3 +259,9 @@ if __name__ == "__main__":
     goalPose.x = 1
     goalPose.y = 8
     goToGoal1(publisher, goalPose, 0.1)
+    '''
+    setDesiredOrientation(publisher, 30, 90)
+
+    setDesiredOrientation(publisher, 30, 0)
+
+    setDesiredOrientation(publisher, 30, 270)

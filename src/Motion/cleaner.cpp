@@ -16,10 +16,12 @@ turtlesim::Pose pose_current;
 double degreeToRadian(double degree);
 double radianToDegree(double radian);
 void poseCallBack(const turtlesim::Pose::ConstPtr &message);
+
 void move(double speed, double distance, bool isForward);
 void rotate(double speed_degree, double distance_degree, bool clockwise);
 void goToGoal1(turtlesim::Pose goal, double distance_tol);
 void goToGoal2(turtlesim::Pose goal, double tolerance);
+void setDesiredOrientation(double speed_degree, double desired_angle_degree);
 
 int main(int argc, char **argv)
 {
@@ -30,14 +32,11 @@ int main(int argc, char **argv)
     subscriber = nodeHandle.subscribe("turtle1/pose", 1, poseCallBack);
 
     turtlesim::Pose goalPose;
-    goalPose.x = 9;
-    goalPose.y = 9;
-    goToGoal1(goalPose, 0.1);
+    setDesiredOrientation(30, 90);
 
-    goalPose.x = 1;
-    goalPose.y = 1;
-    goToGoal2(goalPose, 0.1);
+    setDesiredOrientation(30, 0);
 
+    setDesiredOrientation(30, 270);
     return 0;
 }
 
@@ -337,4 +336,34 @@ void goToGoal2(turtlesim::Pose goal, double tolerance)
     velocity.angular.z = 0;
     publisher.publish(velocity);
     ros::spinOnce();
+}
+
+void setDesiredOrientation(double speed_degree, double desired_angle_degree) {
+    bool clockwise;
+    geometry_msgs::Twist velocity;
+    ros::Rate rate(100);
+
+    // store initial pose
+    int i = 0;
+    do
+    {
+        ros::spinOnce();
+        rate.sleep();
+        i++;
+    } while (pose_current.x == 0 && i < 30);
+
+    // check magnitude
+    double distance_degree = abs(desired_angle_degree - radianToDegree(pose_current.theta));
+    if (distance_degree > 180) { // obtuse
+        distance_degree = 360 - distance_degree;
+        // check clockwise 
+        clockwise = ((desired_angle_degree - radianToDegree(pose_current.theta)) < 0) ? false : true;
+    }
+    else { // acute
+        // check clockwise 
+        clockwise = ((desired_angle_degree - radianToDegree(pose_current.theta)) < 0) ? true : false;
+    }    
+
+    // rotate
+    rotate(speed_degree, distance_degree, clockwise);
 }
