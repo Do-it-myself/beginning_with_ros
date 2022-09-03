@@ -363,30 +363,6 @@ def spiralClean2(linear, angular):
     velocity.angular.z = 0
     publisher.publish(velocity)
 
-def gridClean(speed, density):
-    initialPose = Pose()
-    initialPose.x = 1
-    initialPose.y = 1
-    goToGoal2(initialPose, 0.1)
-
-    while True:
-        setDesiredOrientation(30, 90)
-        moveTill(speed, True, upperY = 10.5)
-        if (pose_current.x >= 10): 
-            break
-        setDesiredOrientation(30, 0)
-        move(speed, 1/density, True)
-        if (pose_current.x >= 10): 
-            break
-        setDesiredOrientation(30, 270)
-        moveTill(speed, True, lowerY = 1)
-        if (pose_current.x >= 10): 
-            break
-        setDesiredOrientation(30, 0)
-        move(speed, 1/density, True)
-        if (pose_current.x >= 10): 
-            break
-
 def spiralClean1(linear, angular):
     global publisher
     velocity = Twist()
@@ -469,6 +445,30 @@ def spiralClean2(linear, angular):
     velocity.linear.x = 0
     velocity.angular.z = 0
     publisher.publish(velocity)
+
+def gridClean(speed, density):
+    initialPose = Pose()
+    initialPose.x = 1
+    initialPose.y = 1
+    goToGoal2(initialPose, 0.1)
+
+    while True:
+        setDesiredOrientation(30, 90)
+        moveTill(speed, True, upperY = 10.5)
+        if (pose_current.x >= 10): 
+            break
+        setDesiredOrientation(30, 0)
+        move(speed, 1/density, True)
+        if (pose_current.x >= 10): 
+            break
+        setDesiredOrientation(30, 270)
+        moveTill(speed, True, lowerY = 1)
+        if (pose_current.x >= 10): 
+            break
+        setDesiredOrientation(30, 0)
+        move(speed, 1/density, True)
+        if (pose_current.x >= 10): 
+            break
 
 if __name__ == "__main__":
     rospy.init_node("cleaner_py")

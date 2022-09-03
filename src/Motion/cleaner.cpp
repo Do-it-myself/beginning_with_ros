@@ -18,12 +18,14 @@ double radianToDegree(double radian);
 void poseCallBack(const turtlesim::Pose::ConstPtr &message);
 
 void move(double speed, double distance, bool isForward);
+void moveTill(double speed, bool isForward, double lowerX = 0, double upperX = 11.5, double lowerY = 0, double upperY = 11.5);
 void rotate(double speed_degree, double distance_degree, bool clockwise);
 void goToGoal1(turtlesim::Pose goal, double distance_tol);
 void goToGoal2(turtlesim::Pose goal, double tolerance);
-void setDesiredOrientation(double speed_degree, double desired_angle_degree);
+void setDesiredOrientation(double speed_degree, double desirfed_angle_degree);
 void spiralClean1(double linear_factor, double angular_factor);
 void spiralClean2(double linear_factor, double angular_factor);
+void gridClean(double speed, double density);
 
 int main(int argc, char **argv)
 {
@@ -33,8 +35,7 @@ int main(int argc, char **argv)
     publisher = nodeHandle.advertise<geometry_msgs::Twist>("turtle1/cmd_vel", 1);
     subscriber = nodeHandle.subscribe("turtle1/pose", 1, poseCallBack);
 
-    turtlesim::Pose goalPose;
-    spiralClean1(5, 50);
+    gridClean(3, 1);
     return 0;
 }
 
@@ -111,7 +112,54 @@ void move(double speed, double distance, bool isForward = true)
     ros::spinOnce();
 }
 
-void rotate(double speed_degree, double distance_degree, bool clockwise = true)
+void moveTill(double speed, bool isForward, double lowerX, double upperX, double lowerY, double upperY)
+{
+    geometry_msgs::Twist velocity;
+    ros::Rate rate(100);
+
+    // decide velocity
+    if (isForward)
+    {
+        velocity.linear.x = abs(speed);
+    }
+    else
+    {
+        velocity.linear.x = -abs(speed);
+    }
+    velocity.linear.y = 0;
+    velocity.linear.z = 0;
+    velocity.angular.x = 0;
+    velocity.angular.y = 0;
+    velocity.angular.z = 0;
+
+    // store initial pose
+    int i = 0;
+    do
+    {
+        ros::spinOnce();
+        pose_initial = pose_current;
+        rate.sleep();
+        i++;
+    } while (pose_initial.x == 0 && i < 30);
+
+    // publish velocity (move)
+    while (pose_current.x > lowerX &&
+           pose_current.x < upperX &&
+           pose_current.y > lowerY &&
+           pose_current.y < upperY)
+    {
+        publisher.publish(velocity);
+        ros::spinOnce();
+        rate.sleep();
+    }
+
+    // publish velocity (stop)
+    velocity.linear.x = 0;
+    publisher.publish(velocity);
+    ros::spinOnce();
+}
+
+void rotate(double speed_degree, double distance_degree, bool clockwise)
 {
     geometry_msgs::Twist velocity;
     ros::Rate rate(100);
@@ -375,7 +423,7 @@ void spiralClean1(double linear, double angular)
     ros::Rate rate(100);
     double angle_total, offset;
     bool positiveFlagPrev, positiveFlag;
-    
+
     // store initial pose
     int i = 0;
     do
@@ -402,28 +450,28 @@ void spiralClean1(double linear, double angular)
         }
         angle_total = abs(pose_current.theta - pose_initial.theta + offset);
 
-        // set 
+        // set
         velocity.linear.x = linear;
         velocity.angular.z = angular / sqrt(angle_total * angle_total + 1);
 
         // publish velocity (move)
         publisher.publish(velocity);
         ros::spinOnce();
-        rate.sleep();     
+        rate.sleep();
     }
 
     // publish velocity (stop)
     velocity.linear.x = 0;
     velocity.angular.z = 0;
     publisher.publish(velocity);
-    ros::spinOnce();   
+    ros::spinOnce();
 }
 
 void spiralClean2(double linear, double angular)
 {
     geometry_msgs::Twist velocity;
     ros::Rate rate(100);
-    
+
     // store initial pose
     int i = 0;
     do
@@ -438,7 +486,7 @@ void spiralClean2(double linear, double angular)
            pose_current.x < 10.5 &&
            pose_current.y < 10.5)
     {
-        // set 
+        // set
         velocity.linear.x = linear;
         velocity.angular.z = angular;
         linear = linear + 0.1;
@@ -446,12 +494,35 @@ void spiralClean2(double linear, double angular)
         // publish velocity (move)
         publisher.publish(velocity);
         ros::spinOnce();
-        rate.sleep();     
+        rate.sleep();
     }
 
     // publish velocity (stop)
     velocity.linear.x = 0;
     velocity.angular.z = 0;
     publisher.publish(velocity);
-    ros::spinOnce();   
+    ros::spinOnce();
+}
+
+void gridClean(double speed, double density)
+{
+    turtlesim::Pose initialPose;
+    initialPose.x = 1;
+    initialPose.y = 1;
+    goToGoal2(initialPose, 0.1);
+
+    while (true) {
+        setDesiredOrientation(30, 90);
+        moveTill(speed, true, 0, 11.5, 0, 10.5);
+        if (pose_current.x >= 9.5) {break;}
+        setDesiredOrientation(30, 0);
+        move(speed, 1/density, true);
+        if (pose_current.x >= 10.5) {break;}
+        setDesiredOrientation(30, 270);
+        moveTill(speed, true, 0, 11.5, 1, 11.5);
+        if (pose_current.x >= 9.5) {break;}
+        setDesiredOrientation(30, 0);
+        move(speed, 1/density, true);
+        if (pose_current.x >= 10.5) {break;}
+    }
 }
