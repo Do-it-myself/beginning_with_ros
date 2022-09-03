@@ -1,0 +1,4 @@
+<launch>
+    <node name="turtle" pkg="turtlesim" type="turtlesim_node" />
+    <node name="clean" pkg = "beginning_with_ros" type="cleaner_cpp" output="screen"/>
+</launch>
