@@ -34,7 +34,7 @@ int main(int argc, char **argv)
     subscriber = nodeHandle.subscribe("turtle1/pose", 1, poseCallBack);
 
     turtlesim::Pose goalPose;
-    spiralClean1(1, 10);
+    spiralClean1(5, 50);
     return 0;
 }
 
@@ -385,6 +385,8 @@ void spiralClean1(double linear, double angular)
         rate.sleep();
         i++;
     } while (pose_current.x == 0 && i < 30);
+
+    positiveFlag = (pose_current.theta >= 0) ? true : false;
 
     while (pose_current.x > 0.5 &&
            pose_current.y > 0.5 &&
