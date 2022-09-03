@@ -247,7 +247,7 @@ if __name__ == "__main__":
     rospy.init_node("cleaner_py")
     publisher = rospy.Publisher("turtle1/cmd_vel", Twist, queue_size=100)
     subscriber = rospy.Subscriber("turtle1/pose", Pose, poseCallBack)
-    '''
+    
     move(publisher, 1, 1, True)
     rotate(publisher, 30, 90, False)
 
@@ -259,9 +259,5 @@ if __name__ == "__main__":
     goalPose.x = 1
     goalPose.y = 8
     goToGoal1(publisher, goalPose, 0.1)
-    '''
-    setDesiredOrientation(publisher, 30, 90)
-
-    setDesiredOrientation(publisher, 30, 0)
-
+    
     setDesiredOrientation(publisher, 30, 270)
