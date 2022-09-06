@@ -28,3 +28,12 @@ CMakeLists.txt
    - add_executable(*your_node* *your_node_path*)
    - add_dependencies(*your_node* ${${PROJECT_NAME}_EXPORTED_TARGETS})
    - target_link_libraries (*your_node* ${catkin_LIBRARIES})
+
+# Note on network configurations
+## Robot machine configuration
+- export ROS_MASTER_URI=http://localhost:11311
+- export ROS_HOSTNAME=*own_device_ip*
+- export ROS_IP=*own_device_ip*
+- echo "ROS_MASTER_URI: "$ROS_MASTER_URI
+- echo "ROS_HOSTNAME: "$ROS_HOSTNAME
+- echo "ROS_IP: "$ROS_IP
