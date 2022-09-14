@@ -30,10 +30,18 @@ CMakeLists.txt
    - target_link_libraries (*your_node* ${catkin_LIBRARIES})
 
 # Note on network configurations
-## Robot machine configuration
+## Robot machine configuration - roscore
 - export ROS_MASTER_URI=http://localhost:11311
-- export ROS_HOSTNAME=*own_device_ip*
-- export ROS_IP=*own_device_ip*
+- export ROS_HOSTNAME=*robot_machine_ip*
+- export ROS_IP=*robot_machine_ip*
+- echo "ROS_MASTER_URI: "$ROS_MASTER_URI
+- echo "ROS_HOSTNAME: "$ROS_HOSTNAME
+- echo "ROS_IP: "$ROS_IP
+
+## Workstation configuration - rosrun
+- export ROS_MASTER_URI=http://*robot_machine_ip*:11311
+- export ROS_HOSTNAME=*workstation_ip*
+- export ROS_IP=*workstation_ip*
 - echo "ROS_MASTER_URI: "$ROS_MASTER_URI
 - echo "ROS_HOSTNAME: "$ROS_HOSTNAME
 - echo "ROS_IP: "$ROS_IP
