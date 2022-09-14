@@ -448,8 +448,8 @@ def spiralClean2(linear, angular):
 
 def gridClean(speed, density):
     initialPose = Pose()
-    initialPose.x = 1
-    initialPose.y = 1
+    initialPose.x = rospy.get_param("x_goal")
+    initialPose.y = rospy.get_param("y_goal")
     goToGoal2(initialPose, 0.1)
 
     while True:

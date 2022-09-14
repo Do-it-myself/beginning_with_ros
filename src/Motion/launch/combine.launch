@@ -1,0 +1,8 @@
+<launch>
+    <include file="$(find beginning_with_ros)/src/Motion/launch/teleop.launch"/>
+
+    <param name="x_goal" value="1"/>
+    <param name="y_goal" value="1"/>
+
+    <node pkg="beginning_with_ros" type="cleaner.py" name="cleaner_node"/>
+</launch>
