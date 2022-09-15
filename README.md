@@ -59,3 +59,8 @@ CMakeLists.txt
 ## End of the file
 - export TURTLEBOT3_MODEL=waffle
 - export SVGA_VGPU10=0
+
+# Note on OpenCV
+- sudo apt-get install ros-noetic-vision-opencv
+- sudo apt-get install ros-noetic-usb-cam
+- sudo apt-get install ros-noetic-image-view
