@@ -45,3 +45,17 @@ CMakeLists.txt
 - echo "ROS_MASTER_URI: "$ROS_MASTER_URI
 - echo "ROS_HOSTNAME: "$ROS_HOSTNAME
 - echo "ROS_IP: "$ROS_IP
+
+# Note on turtlebot configuration
+## Alias section
+- alias burger='export TURTLEBOT3_MODEL=burger'
+- alias waffle='export TURTLEBOT3_MODEL=waffle'
+- alias tb3fake='roslaunch turtlebot3_fake turtlebot3_fake.launch'
+- alias tb3teleop='roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch'
+- alias tb3='roslaunch turtlebot3_gazebo turtlebot3_empty_world.launch'
+- alias tb3maze='roslaunch turtlebot3_gazebo turtlebot3_world.launch'
+- alias tb3house='roslaunch turtlebot3_gazebo turtlebot3_house.launch'
+
+## End of the file
+- export TURTLEBOT3_MODEL=waffle
+- export SVGA_VGPU10=0
