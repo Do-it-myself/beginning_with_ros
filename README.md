@@ -61,6 +61,13 @@ CMakeLists.txt
 - export SVGA_VGPU10=0
 
 # Note on OpenCV
+## Installation
 - sudo apt-get install ros-noetic-vision-opencv
 - sudo apt-get install ros-noetic-usb-cam
 - sudo apt-get install ros-noetic-image-view
+
+## Webcam setting
+- Install extension pack (make sure updated version)
+- USB 3.0 controller
+- Connect webcam via USB
+- sudo usermod -a -G vboxusers *<your_username>* (Can be checked via whoami)

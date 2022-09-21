@@ -169,6 +169,7 @@ catkin_install_python(PROGRAMS
    src/Basics/RectangleArea/area_client.py
    src/Basics/RectangleArea/area_server.py
    src/Motion/cleaner.py
+   src/Perception/image_pubsub.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 
