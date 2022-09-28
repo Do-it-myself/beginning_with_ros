@@ -3,7 +3,6 @@ from std_msgs.msg import String
 from sensor_msgs.msg import Image
 import cv2
 from cv_bridge import CvBridge, CvBridgeError
-import sys
 
 bridge = CvBridge()
 
@@ -17,16 +16,15 @@ def image_callback(ros_image):
         print("Error:", e)
 
     # OpenCV
-    (rows, columns, channels) = cv_image.shape
-    print("Rows:", rows)
-    print("Columns:", columns)
-    print("Channels:", channels)
+    cv_image_flip = cv2.flip(cv_image, 1)
+    (rows, columns, channels) = cv_image_flip.shape
+    threshold_image = cv_image_flip
     font = cv2.FONT_HERSHEY_PLAIN
-    cv2.putText(cv_image, "CV Bridge", (50, 50), font, 1, (255, 255, 255), 2)
-    cv2.imshow("Image window", cv_image)
+    cv2.putText(threshold_image, "CV Bridge", (175, 50), font, 3, (255, 255, 255), 2)
+    cv2.imshow("Image window", threshold_image)
     cv2.waitKey(3)
 
-def main(args):
+def main():
     rospy.init_node('image_converter')
     image_subscriber = rospy.Subscriber("/usb_cam/image_raw", Image, image_callback)
 
@@ -38,4 +36,4 @@ def main(args):
     cv2.destroyAllWindows()
 
 if __name__ == "__main__":
-    main(sys.argv)
+    main()
