@@ -15,10 +15,8 @@ def adaptive_thresholding(rgb_image, threshold_val):
                                                  2)
     return threshold_image
 
-def color_filtering(rgb_image):
+def color_filtering(rgb_image, lower, upper):
     hsv = cv2.cvtColor(rgb_image, cv2.COLOR_BGR2HSV)
-    lower = (0, 10, 60)
-    upper = (20, 150, 210)
     mask = cv2.inRange(hsv, lower, upper)
     return mask
 
@@ -33,7 +31,6 @@ def draw_contours(rgb_image, adaptive):
     
     # find contours (return a tuple of arrays)
     contours, hierarchy = cv2.findContours(binary_image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    print(contours)
 
     # draw contours
     index = -1 # all contours
@@ -73,14 +70,14 @@ def main(video):
             flipped = cv2.flip(frame, 1)
 
             #image = adaptive_thresholding(flipped, 5)
-            #image = color_filtering(flipped)
+            #image = color_filtering(flipped, (0, 10, 60), (20, 150, 210))
             image = flipped
 
             cv2.imshow("Image", image)
             cv2.waitKey(1)
     else:
         frame = cv2.imread("C:/Users/chloe_rns2pbz/Desktop/beginning_with_ros/src/Perception/images/shapes.png")
-        flipped = cv2.flip(frame, 1)
+        flipped = frame
 
         #draw_contours(flipped, True)
         process_contours(flipped, True)
@@ -90,5 +87,34 @@ def main(video):
         cv2.imshow("Image", image)
         cv2.waitKey(0)
 
+def tennis_ball(tennis):
+    binary_image = color_filtering(tennis, (30, 100, 50), (60, 255, 255))
+
+    contours, hierarchy = cv2.findContours(binary_image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    # filter contours
+    for contour in contours:
+        area = cv2.contourArea(contour)
+        if area > 400:
+            cv2.drawContours(tennis, [contour], -1, (0, 0, 255), 2)   
+
+def tennis_tracking(video):
+    if video:
+        video_capture = cv2.VideoCapture(0)
+
+        while(True):
+            ret, frame = video_capture.read()
+            flipped = cv2.flip(frame, 1)
+            tennis_ball(flipped)
+            cv2.imshow("Tennis", flipped)
+            cv2.waitKey(1)
+        
+    else:
+        tennis = cv2.imread("C:/Users/chloe_rns2pbz/Desktop/beginning_with_ros/src/Perception/images/tennis.jpg")
+        tennis_ball(tennis)
+        cv2.imshow("Tennis", tennis)
+        cv2.waitKey(0)
+
+
 if __name__ == "__main__":
-    main(False)
+    #main(False)
+    tennis_tracking(True)
